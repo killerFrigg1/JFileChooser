@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
+
 import javafx.event.ActionEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -67,15 +69,32 @@ public class DaneOsobowe implements HierarchicalController<MainController> {
 		// XSSFWorkbook wb = new XSSFWorkbook();
 		// XSSFSheet sheet = wb.createSheet("Studenci");
 
-		FileWriter fw = new FileWriter("KawalaCSV.csv", false);
-		BufferedWriter bw = new BufferedWriter(fw);
-		PrintWriter pw = new PrintWriter(bw);
-		for (Student student : tabelka.getItems()) {
-			pw.println(student.getName() + "," + student.getSurname() + "," + student.getPesel() + ","
-					+ student.getIdx() + "," + student.getGrade() + "," + student.getGradeDetailed());
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("/home/me/Documents"));
+		int retrival = chooser.showSaveDialog(null);
+		if (retrival == JFileChooser.APPROVE_OPTION) {
+			try (FileWriter fw = new FileWriter(chooser.getSelectedFile() + ".csv")) {
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter pw = new PrintWriter(bw);
+				for (Student student : tabelka.getItems()) {
+					pw.println(student.getName() + "," + student.getSurname() + "," + student.getPesel() + ","
+							+ student.getIdx() + "," + student.getGrade() + "," + student.getGradeDetailed());
+				}
+				pw.flush();
+				pw.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
-		pw.flush();
-		pw.close();
+		/*
+		 * FileWriter fw = new FileWriter("KawalaCSV.csv", false);
+		 * BufferedWriter bw = new BufferedWriter(fw); PrintWriter pw = new
+		 * PrintWriter(bw); for (Student student : tabelka.getItems()) {
+		 * pw.println(student.getName() + "," + student.getSurname() + "," +
+		 * student.getPesel() + "," + student.getIdx() + "," +
+		 * student.getGrade() + "," + student.getGradeDetailed()); } pw.flush();
+		 * pw.close();
+		 */
 	}
 
 	/**
